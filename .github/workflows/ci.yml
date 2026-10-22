@@ -1,0 +1,33 @@
+name: DeceptionGuard-OT CI/CD Security Audit Gate
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  verify-and-audit:
+    name: Typecheck, Unit Tests & Zero-Leakage Honeypot Gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: TypeScript Strict Verification
+        run: npm run lint
+
+      - name: Execute Unit & Live TCP Socket Audit Suite (node:test)
+        run: npm test
+
+      - name: Build Production Bundle
+        run: npm run build

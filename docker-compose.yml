@@ -1,0 +1,34 @@
+version: "3.9"
+
+# Section 12 & 15 Compliance: Isolated Host-Only / Internal Lab Topology
+# Blocks all outbound internet connections by default (internal: true).
+
+services:
+  deceptionguard-auditor-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dg-ot-auditor
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - OT_LAB_SUBNET=10.240.0.0/24
+      - CONTAINMENT_POLICY=DENY_BY_DEFAULT
+    networks:
+      ot_isolated_lab_net:
+        ipv4_address: 10.240.0.5
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+
+networks:
+  ot_isolated_lab_net:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.240.0.0/24

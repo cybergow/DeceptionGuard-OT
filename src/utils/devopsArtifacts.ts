@@ -1,0 +1,7 @@
+import {
+  CICD_PIPELINE_YAML,
+  DOCKER_COMPOSE_YAML,
+  TERRAFORM_MAIN_TF,
+} from '../core/devopsPresets';
+
+export { CICD_PIPELINE_YAML, DOCKER_COMPOSE_YAML, TERRAFORM_MAIN_TF };

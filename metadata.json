@@ -1,0 +1,6 @@
+{
+  "name": "DeceptionGuard-OT",
+  "description": "Automated Discovery and Verification of Information-Leakage Paths in Digital-Twin Industrial Honeypots with multi-step inference auditing, mitigation verification, and enterprise CI/CD telemetry.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

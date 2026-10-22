@@ -1,0 +1,55 @@
+name: DeceptionGuard-OT Enterprise CI/CD & Deception Assurance Pipeline
+
+on:
+  push:
+    branches: [ main, release/* ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  security-events: write
+  id-token: write
+
+jobs:
+  static-analysis-and-unit-tests:
+    name: Typecheck, Lint & Deterministic Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: TypeScript Strict Type Verification
+        run: npm run lint
+
+      - name: Run Core Auditor & Multi-Step Inference Unit Tests
+        run: npx tsx --test src/core/auditor.test.ts
+
+  honeypot-leakage-regression-gate:
+    name: Automated Deception Leakage & Realism Gate
+    needs: static-analysis-and-unit-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Verify Zero Unmitigated Leaks & 100% Normal Behavior Consistency
+        run: npx tsx --test src/core/auditor.test.ts
